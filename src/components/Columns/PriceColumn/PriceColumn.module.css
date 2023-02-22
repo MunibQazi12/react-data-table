@@ -1,0 +1,4 @@
+.container {
+  @apply text-lg text-right;
+  letter-spacing: 1.5px;
+}

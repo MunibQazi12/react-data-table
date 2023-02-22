@@ -1,0 +1,19 @@
+// function alphanumericFalsyLast(rowA: any, rowB: any, columnId: any, desc: any) {
+//   if (!rowA.values[columnId] && !rowB.values[columnId]) {
+//     return 0;
+//   }
+
+//   if (!rowA.values[columnId]) {
+//     return desc ? -1 : 1;
+//   }
+
+//   if (!rowB.values[columnId]) {
+//     return desc ? 1 : -1;
+//   }
+
+//   return rowA.values[columnId].localeCompare(rowB.values[columnId]);
+// }
+
+// export const columnDefaults: any = {
+//   sortType: alphanumericFalsyLast,
+// };

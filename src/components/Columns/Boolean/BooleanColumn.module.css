@@ -1,0 +1,11 @@
+.booleanContainer {
+  @apply flex justify-center;
+}
+
+.booleanTrue {
+  @apply text-green-300;
+}
+
+.booleanFalse {
+  @apply text-red-300;
+}

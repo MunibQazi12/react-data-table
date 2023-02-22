@@ -1,0 +1,16 @@
+.actions {
+  @apply flex gap-3;
+}
+
+.action {
+  @apply w-fit p-2 relative
+    rounded-full
+    text-gray-500
+    hover:bg-primary-600 hover:text-gray-200
+    focus:ring-primary-600
+    transition-all duration-300;
+}
+
+.tooltip {
+  @apply mb-1;
+}

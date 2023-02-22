@@ -1,0 +1,35 @@
+.container {
+  @apply px-3 py-1 rounded-xl text-center w-fit tracking-widest text-gray-300 bg-opacity-50;
+}
+
+.green {
+  @apply bg-green-500;
+}
+
+.red {
+  @apply bg-red-500;
+}
+
+.c1 {
+  @apply bg-tableStatusCol-1;
+}
+
+.c2 {
+  @apply bg-tableStatusCol-2;
+}
+
+.c3 {
+  @apply bg-tableStatusCol-3;
+}
+
+.c4 {
+  @apply bg-tableStatusCol-4;
+}
+
+.c5 {
+  @apply bg-tableStatusCol-5;
+}
+
+.c6 {
+  @apply bg-tableStatusCol-6;
+}

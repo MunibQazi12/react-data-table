@@ -1,0 +1,11 @@
+.container {
+  @apply flex flex-col justify-center items-center h-full pb-14;
+}
+
+.title {
+  @apply text-3xl text-center px-14;
+}
+
+.content {
+  @apply text-lg text-center px-14 py-2;
+}

@@ -1,0 +1,7 @@
+.wrapper {
+  @apply flex h-full;
+}
+
+.center {
+  @apply m-auto;
+}

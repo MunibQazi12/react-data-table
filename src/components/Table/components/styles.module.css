@@ -1,0 +1,23 @@
+.inputContainer {
+  @apply flex mt-1;
+}
+
+.filterInput {
+  @apply px-2 py-2 rounded-md bg-gray-700 text-gray-400 outline-none text-xs flex-grow;
+}
+
+.input:focus {
+  @apply shadow-gray-800 shadow-2xl;
+}
+
+.textFilter {
+  @apply w-36;
+}
+
+.rangeFilter {
+  @apply w-32;
+}
+
+.rangeContainer {
+  @apply flex space-x-2;
+}

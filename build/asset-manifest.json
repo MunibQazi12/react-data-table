@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/lims-react-test/static/css/main.2dc54e08.css",
+    "main.js": "/lims-react-test/static/js/main.18818599.js",
+    "index.html": "/lims-react-test/index.html",
+    "main.2dc54e08.css.map": "/lims-react-test/static/css/main.2dc54e08.css.map",
+    "main.18818599.js.map": "/lims-react-test/static/js/main.18818599.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2dc54e08.css",
+    "static/js/main.18818599.js"
+  ]
+}
