@@ -7,6 +7,10 @@ interface Props<ObjectType> {
 }
 
 export function HeaderSort<T>({ header }: Props<T>) {
+  // console.log(
+  //   header.column.getSortingFn(),
+  //   header.column.
+  // )
   return (
     <div>
       <div

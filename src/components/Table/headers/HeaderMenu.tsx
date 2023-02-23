@@ -1,18 +1,32 @@
 // import { BsThreeDotsVertical } from 'react-icons/bs';
-import { RiDragMove2Line } from 'react-icons/ri';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import css from '../styles/table.module.css';
 
 interface Props {
   showMenu: boolean,
-  setShowMenu: Function
+  setShowMenu: Function,
+  onClickMenuOption: Function
+  headerId: string,
+  isFixed: boolean | string
 }
-export const HeaderMenu = ({ showMenu, setShowMenu }: Props) => {
+
+const menuOptions = [
+  'Hide',
+  'Freeze Left',
+  'Freeze Right',
+  'Unfreeze',
+  'Sort Assending',
+  'Sort Desending',
+  'Unsort',
+  'Move Left',
+  'Move Right',
+  'Move Start',
+  'Move End'
+
+]
+export const HeaderMenu = ({ showMenu, setShowMenu, onClickMenuOption, headerId, isFixed }: Props) => {
 
   const dropdownRef = useRef<HTMLInputElement>(null);
-  // const toggleMenu = () => {
-  // setShowMenu(!showMenu);
-  // };
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -26,21 +40,29 @@ export const HeaderMenu = ({ showMenu, setShowMenu }: Props) => {
 
   return (
     <div className={css.dropdown} ref={dropdownRef}>
+      <div className={css.dropdownList}>
+        <ul>
+          {
+            menuOptions.map((option: string, index: number) => {
+              return <li onClick={(e) => {
+                setShowMenu(false);
+                e.stopPropagation()
+                onClickMenuOption({
+                action: option,
+                column: headerId,
+                index: index
+              })}}>{option}</li>
+            })
+          }
+        </ul>
+      </div>
       {/* <BsThreeDotsVertical size={14} onClick={toggleMenu} /> */}
-      <RiDragMove2Line size={14} />
-      {showMenu && (
-        <div className={css.dropdownList}>
-          <ul>
-            <li>Hide</li>
-            <li>Freeze Left</li>
-            <li>Freeze Right</li>
-            <li>Unfreeze</li>
-            <li>Sort Assending</li>
-            <li>Sort Desending</li>
-            <li>Unsort</li>
-          </ul>
-        </div>
-      )}
+      {/* {!isFixed && <RiDragMove2Line size={14} />} */}
+      {/* {showMenu && ( */}
+      {/* <ToolTip content={
+       
+       } />
+        </ToolTip>  */}
     </div>
   );
 };

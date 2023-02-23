@@ -8,5 +8,6 @@ const root = ReactDOM.createRoot(document.getElementById('root')!);
 root.render(
   <StrictMode>
     <App />
-  </StrictMode>
+    <div  id="header-menu-portal" ></div>
+  </StrictMode >
 );

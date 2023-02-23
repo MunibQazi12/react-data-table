@@ -96,7 +96,7 @@
 }
 
 .dropdownList {
-  @apply absolute left-0 top-full bg-gray-800 rounded-lg shadow-lg w-44 z-dropdown text-left;
+  @apply absolute left-0 bg-gray-800 rounded-lg shadow-lg w-44 z-dropdown text-left;
 }
 
 .dropdownList li {

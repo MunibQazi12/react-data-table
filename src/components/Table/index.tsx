@@ -1,10 +1,13 @@
-import { ColumnDef } from '@tanstack/react-table';
+import {
+  ColumnDef, PaginationState,
+} from '@tanstack/react-table';
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import LoadingSpinner from '../LoadingSpinner';
 import { ServerError } from '../ServerError';
 import { TableConfig } from './models/TableOptions';
 import { TableRenderer } from './TableRender';
+import { useState } from "react"
 
 interface Props<DataType> {
   requestPath?: string;
@@ -15,6 +18,13 @@ interface Props<DataType> {
   config?: TableConfig;
 }
 
+interface APIData<DataType> {
+  products: DataType[];
+  limit: number;
+  skip: number;
+  total: number;
+}
+
 export function ZTable<DataType>({
   requestPath,
   localData,
@@ -23,17 +33,23 @@ export function ZTable<DataType>({
   onClick,
   config,
 }: Props<DataType>) {
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  })
+
   const { isLoading, data, isError, error } = useQuery(
     // 'not-enabled' is used to avoid Missing queryFn when the query is not enabled.
-    queryId || requestPath! || 'not-enabled',
+    [queryId || requestPath! || 'not-enabled', pagination],
     () => {
-      return axios.get(requestPath!);
+      const queryString = `?skip=${pagination.pageIndex}&limit=${pagination.pageSize}`;
+      return axios.get((requestPath+queryString)!);
     },
     {
-      select: (res): DataType[] => {
-        return res?.data.products;
+      select: (res): APIData<DataType> => {
+        return res?.data;
       },
-      onSuccess: data => {},
+      onSuccess: data => { },
       refetchOnReconnect: 'always',
       refetchOnWindowFocus: 'always',
       refetchOnMount: 'always',
@@ -56,14 +72,19 @@ export function ZTable<DataType>({
     }
   }
 
+  const {limit=10, total=0, products  }  = data || {}
+
   return (
     <div>
       {
         <TableRenderer
           columnsDef={columnsDef}
-          dataList={data !== undefined ? data : localData!}
-          onClick={onClick}
+          dataList={products || localData!}
+          // onClick={onClick}
           config={config}
+          pageCount={total/limit}
+          pagination={pagination}
+          setPagination={setPagination}
         />
       }
     </div>

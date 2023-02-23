@@ -12,14 +12,11 @@ import {
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFacetedMinMaxValues,
-  getPaginationRowModel,
+  // getPaginationRowModel,
   FilterFn,
   Row,
 } from '@tanstack/react-table';
-
 import { useEffect, useState } from 'react';
-import { string } from 'yup';
-import { boolean } from 'yup/lib/locale';
 import { IndeterminateCheckbox } from './components/IndeterminateCheckbox';
 import { MainHeader } from './headers/MainHeader';
 import { uidDefaultColumn } from './helpers/defaultColumns';
@@ -45,9 +42,10 @@ interface Props<DataType> {
   ) => void;
   onClick?: (row: DataType) => void;
   initialSelection?: DataType[];
-
+  pageCount?: number
   sortColumns?: SortCol[];
-
+  setPagination?: any;
+  pagination?: any
   config?: TableConfig;
 }
 
@@ -60,6 +58,9 @@ export function TableRenderer<DataType>({
   onEdit,
   onClick,
   sortColumns,
+  setPagination,
+  pagination,
+  pageCount,
   //TODO: link all config values:
   config = {
     enableSorting: true,
@@ -70,16 +71,19 @@ export function TableRenderer<DataType>({
 }: Props<DataType>) {
   const [data, setData] = useState<DataType[]>(() => dataList);
   const [showFilters, setShowFilters] = useState(true)
+  const [enableTableConfig, setEnableTableConfig] = useState(true)
   useEffect(() => {
     setData(dataList);
   }, [dataList]);
+
 
   const [columns] = useState(() =>
     enableSelection
       ? [
         {
           id: 'select',
-          header: ({ table }) => (
+          fixed: "right",
+          header: ({ table }: any) => (
             <IndeterminateCheckbox
               {...{
                 checked: table.getIsAllRowsSelected(),
@@ -88,7 +92,7 @@ export function TableRenderer<DataType>({
               }}
             />
           ),
-          cell: ({ row }) => (
+          cell: ({ row }: any) => (
             <IndeterminateCheckbox
               {...{
                 checked: row.getIsSelected(),
@@ -132,8 +136,13 @@ export function TableRenderer<DataType>({
   //### Filters
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
+  const [columnVisibility, setColumnVisibility] = useState({})
+  const [columnPinning, setColumnPinning] = useState({})
+
+  // console.log({ data })
 
   const table = useReactTable({
+    pageCount,
     data,
     columns,
     //### Filters
@@ -147,7 +156,8 @@ export function TableRenderer<DataType>({
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    // getPaginationRowModel: getPaginationRowModel(),
+    onPaginationChange: setPagination,
     state: {
       columnOrder,
       sorting,
@@ -155,8 +165,12 @@ export function TableRenderer<DataType>({
       columnFilters,
       globalFilter,
       rowSelection,
+      columnVisibility,
+      columnPinning,
+      pagination
     },
     columnResizeMode: 'onChange',
+    onColumnPinningChange: setColumnPinning,
     onSortingChange: setSorting,
     onColumnOrderChange: setColumnOrder,
     getCoreRowModel: getCoreRowModel(),
@@ -164,6 +178,7 @@ export function TableRenderer<DataType>({
     enableRowSelection: enableSelection,
     enableMultiRowSelection: enableSelection,
     onRowSelectionChange: setRowSelection,
+    onColumnVisibilityChange: setColumnVisibility,
     //### Filters
     meta: {
       updateData: (rowIndex, columnId, value) => {
@@ -189,9 +204,10 @@ export function TableRenderer<DataType>({
     // debugTable: true,
     // debugHeaders: true,
     // debugColumns: false,
-    enableFilters: showFilters,
-    enableColumnResizing: true,
-    enableSorting: config.enableSorting,
+    enableFilters: showFilters && enableTableConfig,
+    enableColumnResizing: config.enableResizing && enableTableConfig,
+    enableSorting: config.enableSorting && enableTableConfig,
+    manualPagination: true && enableTableConfig,
   });
 
   useEffect(() => {
@@ -262,56 +278,93 @@ export function TableRenderer<DataType>({
         }}
         onClick={() => setShowFilters(!showFilters)}
       >
-        Show Filters
+        {showFilters ? 'Hide' : 'Show'} Filters
       </button>
-      <table
-        {...{
-          className: css.table,
-          style: {
-            width: table.getCenterTotalSize(),
-          },
+
+      <button
+        className={css.action}
+        style={{
+          margin: '10px',
+          border: '2px solid grey',
+          padding: '2px'
         }}
+        onClick={() => setEnableTableConfig(!enableTableConfig)}
       >
-        <thead>
-          {table.getHeaderGroups().map(headerGroup => (
-            <tr key={headerGroup.id} className={css.tr}>
-              {headerGroup.headers.map(header => (
-                <MainHeader
-                  key={header.id}
-                  header={header}
-                  table={table}
-                  enableDragging={config.enableDragging}
-                />
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map(row => (
-            <tr
-              key={row.id}
-              className={`${css.tr} ${onClick ? css.trWithOnClick : ''}`}
-              onClick={() => {
-                if (onClick) {
-                  onClick(row.original);
-                }
-              }}
-            >
-              {row.getVisibleCells().map(cell => (
-                <td
-                  {...{
-                    key: cell.id,
-                    className: css.td,
-                    style: { width: cell.column.getSize() },
-                  }}
-                >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+        {enableTableConfig ? 'Lock' : 'Unlock'} Table
+      </button>
+
+      <button
+        className={css.action}
+        style={{
+          margin: '10px',
+          border: '2px solid grey',
+          padding: '2px'
+        }}
+        onClick={() => setColumnVisibility({})}
+      >
+        Show Hidden Columns
+      </button>
+
+
+
+      <div style={{ overflow: "auto", borderRadius: "16px" }}>
+        <table
+          {...{
+            className: css.table,
+            style: {
+              width: table.getCenterTotalSize(),
+            },
+          }}
+        >
+          <thead>
+            {table.getHeaderGroups().map(headerGroup => (
+              <tr key={headerGroup.id} className={css.tr}>
+                {headerGroup.headers.map(header => (
+                  <MainHeader
+                    key={header.id}
+                    header={header}
+                    table={table}
+                    enableDragging={config.enableDragging}
+                    enableTableConfig={enableTableConfig}
+                  />
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.map(row => (
+              <tr
+                key={row.id}
+                className={`${css.tr} ${onClick ? css.trWithOnClick : ''}`}
+                onClick={() => {
+                  if (onClick) {
+                    onClick(row.original);
+                  }
+                }}
+              >
+                {row.getVisibleCells().map(cell => (
+                  <td
+                    {...{
+                      key: cell.id,
+                      className: css.td,
+                      style: {
+                        width: cell.column.getSize(),
+                        minWidth: cell.column.getSize(),
+                        backgroundColor: "rgb(54 57 63)",
+                        // zIndex: 9,
+                        [`${cell.column.getIsPinned()}`]: 0,
+                        position: cell.column.getIsPinned() ? "sticky" : "unset"
+                      },
+                    }}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <div className="h-2" />
       <div className="flex items-center gap-2  mb-20">
         <button
