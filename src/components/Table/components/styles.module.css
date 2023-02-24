@@ -295,6 +295,8 @@
 .inputContainer {
     margin-top: 0.25rem;
     display: flex;
+    width: 90px;
+    margin-right: 10px;
 }
 
 .rangeContainer {

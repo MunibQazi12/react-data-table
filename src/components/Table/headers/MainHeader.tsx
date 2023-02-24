@@ -142,6 +142,8 @@ export function MainHeader<T>({ header, table, enableTableConfig }: Props<T>) {
           opacity: isDragging ? 0.5 : 1,
           minWidth: header.column.getSize(),
           backgroundColor: "rgb(54 57 63)",
+          position: "relative",
+          
           // ...(!header.column.getIsPinned() && {backgroundColor: "rgb(54 57 63)"}),
           // backgroundColor: "yellow",
           ...(header.column.getIsPinned() && { zIndex: 9 }),
@@ -212,9 +214,13 @@ export function MainHeader<T>({ header, table, enableTableConfig }: Props<T>) {
           <ColumnSortIcon isSorted={header.column.getIsSorted()} />
         </div>
         {header.column.getCanFilter() ? (
-          <div>
+          <div className="flex justify-between">
             <Filter column={header.column} table={table} />
-            <button onClick={() => resetColumnFilters(header.column)}>:x:</button>
+            <button onClick={() => resetColumnFilters(header.column)}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
         ) : null}
 

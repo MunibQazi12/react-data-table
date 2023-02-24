@@ -25,7 +25,7 @@ export function Filter({
   );
 
   return typeof firstValue === 'number' ? (
-    <div>
+    
       <div className={css.rangeContainer}>
         <FilterField
           type='number'
@@ -56,8 +56,7 @@ export function Filter({
           }`}
         />
       </div>
-      <div className='h-1' />
-    </div>
+
   ) : (
     <>
       <datalist id={column.id + 'list'}>
