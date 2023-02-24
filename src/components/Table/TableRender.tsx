@@ -7,7 +7,6 @@ import {
   SortingState,
   useReactTable,
   //### Filters
-  ColumnFiltersState,
   getFilteredRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
@@ -23,6 +22,8 @@ import { uidDefaultColumn } from './helpers/defaultColumns';
 import { defaultSortColumns } from './helpers/defaultSortColumns';
 import { TableConfig } from './models/TableOptions';
 import css from './styles/table.module.css';
+import { DebounceInput } from 'react-debounce-input';
+
 
 export interface SortCol {
   id: string;
@@ -42,11 +43,26 @@ interface Props<DataType> {
   ) => void;
   onClick?: (row: DataType) => void;
   initialSelection?: DataType[];
-  pageCount?: number
+  // pageCount?: number
   sortColumns?: SortCol[];
-  setPagination?: any;
-  pagination?: any
+  // setPagination?: any;
+  // pagination?: any
   config?: TableConfig;
+  // columnFilters?: any,
+  // setColumnFilters?: any;
+  // globalFilter?: string,
+  // setGlobalFilter?: any,
+  filters?: {
+    columnFilters: Array<any>,
+    setColumnFilters: any,
+    globalFilter: string,
+    setGlobalFilter: any
+  }
+  Pagination?: {
+    pagination: any,
+    setPagination: any,
+    pageCount: number
+  }
 }
 
 export function TableRenderer<DataType>({
@@ -58,9 +74,9 @@ export function TableRenderer<DataType>({
   onEdit,
   onClick,
   sortColumns,
-  setPagination,
-  pagination,
-  pageCount,
+  Pagination,
+  //Table filters
+  filters,
   //TODO: link all config values:
   config = {
     enableSorting: true,
@@ -72,6 +88,13 @@ export function TableRenderer<DataType>({
   const [data, setData] = useState<DataType[]>(() => dataList);
   const [showFilters, setShowFilters] = useState(true)
   const [enableTableConfig, setEnableTableConfig] = useState(true)
+  const { pageCount, pagination, setPagination } = Pagination || {}
+  const {
+    columnFilters,
+    setColumnFilters,
+    globalFilter,
+    setGlobalFilter
+  } = filters || {}
   useEffect(() => {
     setData(dataList);
   }, [dataList]);
@@ -134,8 +157,7 @@ export function TableRenderer<DataType>({
   };
 
   //### Filters
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [globalFilter, setGlobalFilter] = useState('');
+  // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState({})
   const [columnPinning, setColumnPinning] = useState({})
 
@@ -304,7 +326,20 @@ export function TableRenderer<DataType>({
       >
         Show Hidden Columns
       </button>
-
+      <button
+        style={{
+          margin: '10px',
+          padding: '2px'
+        }}
+      >
+        <DebounceInput
+          value={globalFilter ?? ''}
+          onChange={e => setGlobalFilter(String(e.target.value))}
+          className="p-2 font-lg shadow border border-block"
+          placeholder="Search all columns..."
+          debounceTimeout={300}
+        />
+      </button>
 
 
       <div style={{ overflow: "auto", borderRadius: "16px" }}>

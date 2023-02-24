@@ -1,5 +1,5 @@
 import {
-  ColumnDef, PaginationState,
+  ColumnDef, ColumnFiltersState, PaginationState,
 } from '@tanstack/react-table';
 import axios from 'axios';
 import { useQuery } from 'react-query';
@@ -37,13 +37,16 @@ export function ZTable<DataType>({
     pageIndex: 0,
     pageSize: 10,
   })
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [globalFilter, setGlobalFilter] = useState('');
+
 
   const { isLoading, data, isError, error } = useQuery(
     // 'not-enabled' is used to avoid Missing queryFn when the query is not enabled.
-    [queryId || requestPath! || 'not-enabled', pagination],
+    [queryId || requestPath! || 'not-enabled', pagination, globalFilter],
     () => {
-      const queryString = `?skip=${pagination.pageIndex}&limit=${pagination.pageSize}`;
-      return axios.get((requestPath+queryString)!);
+      const queryString = `?skip=${pagination.pageIndex}&limit=${pagination.pageSize}&search=${globalFilter}`;
+      return axios.get((requestPath + queryString)!);
     },
     {
       select: (res): APIData<DataType> => {
@@ -72,7 +75,7 @@ export function ZTable<DataType>({
     }
   }
 
-  const {limit=10, total=0, products  }  = data || {}
+  const { limit = 10, total = 0, products } = data || {}
 
   return (
     <div>
@@ -82,9 +85,20 @@ export function ZTable<DataType>({
           dataList={products || localData!}
           // onClick={onClick}
           config={config}
-          pageCount={total/limit}
-          pagination={pagination}
-          setPagination={setPagination}
+
+          filters={{
+            columnFilters: columnFilters,
+            setColumnFilters: setColumnFilters,
+            globalFilter: globalFilter,
+            setGlobalFilter: setGlobalFilter
+          }}
+
+          Pagination={{
+            pageCount: total / limit,
+            pagination: pagination,
+            setPagination: setPagination,
+          }}
+
         />
       }
     </div>
