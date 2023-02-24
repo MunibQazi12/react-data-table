@@ -4,6 +4,7 @@ import {
   TableState,
   Updater,
 } from '@tanstack/react-table';
+import { useEffect } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { HeaderReorder } from '../headers/HeaderReorder';
 
@@ -12,6 +13,7 @@ interface Props<ObjectType> {
   setColumnOrder: (updater: Updater<ColumnOrderState>) => void;
   columnOrder: ColumnOrderState;
   column: Column<ObjectType, unknown>;
+  draggerClicked?: boolean
 }
 
 export function useHeaderDrag<T>({
@@ -19,7 +21,14 @@ export function useHeaderDrag<T>({
   setColumnOrder,
   columnOrder,
   column,
+  draggerClicked
 }: Props<T>) {
+
+  useEffect(() => {
+    console.log('dragClicked')
+  }, [draggerClicked])
+
+
   const [, dropRef] = useDrop({
     accept: 'column',
     drop: (draggedColumn: Column<T>) => {

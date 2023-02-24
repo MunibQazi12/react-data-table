@@ -15,7 +15,9 @@ const ToolTip: FC<TooltipProps> = ({ children, content, display = true, displayT
     const [visible, setVisibility] = useState<boolean>(false)
     const [styles, setStyles] = useState<Object>({})
     const tooltipRef = useRef<HTMLDivElement>(null!)
-
+    
+    console.log("show is : "  , display)
+    
     const show = () => {
         const style = { left: 0, top: 0 };
 

@@ -39,6 +39,13 @@ export const TableTest = () => {
       <ZTable<Product>
         requestPath='https://dummyjson.com/products'
         columnsDef={productColumns}
+        apiKeys={{
+          skip: "skip",
+          sort: "sort",
+          limit: "limit",
+          filter: "filter",
+          search: "search"
+        }}
       />
     </div>
   );

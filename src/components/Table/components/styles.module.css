@@ -1,23 +1,302 @@
-.inputContainer {
-  @apply flex mt-1;
+/** TABLES **/
+
+.tableContainer {
+  @apply /* -m-3 */
+   overflow-visible;
+  /* TODO: resize */
+  /* resize: both; */
+}
+
+.table {
+  @apply shadow-lg border-separate border-spacing-0  rounded-lg text-sm  
+  /* TODO: used for rounded corners but disabled for sticky header */
+  /* overflow-hidden  resize-x*/;
+  font-family: 'Arial', sans-serif;
+}
+
+.th {
+  @apply border-gray-600 px-8 py-2;
+}
+
+.td {
+  @apply border-gray-600 px-8 py-2;
+}
+
+.th {
+  @apply border-b-4 bg-gray-800 shadow-lg text-center sticky top-0;
+}
+
+.td {
+  @apply border-r border-l border-b;
+  /* hover:cursor-pointer */
+}
+
+.table thead th {
+  box-shadow: none;
+  border-bottom-width: 2px;
+  border-left-width: 2px;
+}
+
+.tr {
+  @apply bg-gray-700 transition-all duration-200;
+  /* cursor-pointer  */
+}
+
+.tr:nth-child(even) {
+  background-color: #2d3436;
+}
+
+.tr:nth-child(odd) {
+  background-color: #262c2e;
+}
+
+.tr:hover {
+  @apply bg-gray-800;
+}
+
+.trWithOnClick:hover {
+  @apply bg-primary-800 cursor-pointer;
+}
+
+.th:first-child,
+.td:first-child {
+  @apply border-l-0;
+}
+
+.th:last-child,
+.td:last-child {
+  @apply border-r-0;
+}
+
+/* .tr:nth-child(odd) td {
+  @apply bg-gray-800;
+}
+
+.tr:nth-child(even) td {
+  @apply bg-gray-900;
+} */
+
+/* TODO: a bit moved to the left .. so center it */
+/* TODO: re implement from scratch by copying code from @tanstack */
+.resizer {
+  @apply absolute z-tableHeaderResizer top-0 h-full  bg-gray-600
+  cursor-col-resize;
+  width: 2px;
+  right: 0;
+  user-select: none;
+  touch-action: none;
+}
+
+.th:last-child .resizer {
+  @apply bg-transparent;
+  right: 0px;
+}
+
+.resizer.isResizing {
+  @apply bg-gray-500;
+}
+
+.columnDragger {
+  @apply mr-2 cursor-grab;
+  width: 50px;
+}
+
+.headerFlex {
+  @apply flex items-center min-w-max;
+}
+.headerFlexSpacer {
+  @apply grow;
+}
+.dropdown {
+  @apply relative inline-block;
+}
+
+.dropdownList {
+  @apply absolute left-0 bg-gray-800 rounded-lg shadow-lg w-44 z-dropdown text-left;
+}
+
+.dropdownList li {
+  @apply py-2 cursor-pointer hover:bg-gray-700 rounded-lg p-3 text-gray-400;
+  cursor: pointer;
+    border-radius: 0;
+    padding: 0.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    --tw-text-opacity: 1;
+    color: rgb(212 215 220 / var(--tw-text-opacity));
+    border-bottom: 0.1px solid #d3d3d354;
+    font-size: 14px;
+    font-family: Arial;
+}
+
+.dropdownList li:first-child {
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+}
+
+.dropdownList li:last-child {
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-bottom: none;
+}
+
+
+.sortDiv {
+  @apply cursor-pointer 
+   select-none;
+  /* position: relative;
+  left: 50px; */
+}
+
+.sortIcon {
+  @apply ml-2;
+}
+
+.checkboxDiv {
+  @apply cursor-pointer relative text-center w-fit;
+}
+
+.selectCheckbox {
+  @apply cursor-pointer appearance-none h-7 w-7 border-4 rounded-md border-primary-600 bg-primary-900 opacity-80;
+}
+
+.selectCheckboxIndeterminate {
+  @apply h-7 w-7 text-primary-500 absolute left-0 top-0  transition ease-out scale-0 duration-100;
+}
+
+.selectCheckboxIndeterminateShow {
+  @apply transition ease-in scale-100 duration-100 px-1;
+}
+
+.checkboxIcon {
+  @apply h-7 w-7 text-primary-500 absolute left-1 bottom-3  transition ease-out scale-0 duration-100;
+}
+
+.checkboxIconShow {
+  @apply transition ease-in scale-100 duration-100;
+}
+
+.editableCell input {
+  @apply border-2 border-gray-700 hover:border-gray-500 
+  py-1 px-2 rounded-lg bg-gray-800 text-gray-400 outline-none;
+}
+
+.editableCell input:focus {
+  @apply border-2 border-secondary-500 shadow-gray-800 shadow-md;
+}
+
+.tableHeader {
+  width: 100%;
+}
+
+.tableHeaderBtn {
+  font-family: 'Arial', sans-serif;
+}
+
+.tableHeaderBtn button {
+  width: 180px;
+  height: 40px;
+  border-radius: 5px;
+  font-size: 14px;
+  margin: 10px;
+  background-color: #313131;
+  border-radius: 25px;
+}
+
+.tableHeaderBtn button:hover {
+  background-color: #5c5c5c;
+  color: #fff;
 }
 
 .filterInput {
-  @apply px-2 py-2 rounded-md bg-gray-700 text-gray-400 outline-none text-xs flex-grow;
+  border-radius: 5px;
+  background-color: #313131;
+  border: 1px solid #5c5c5c;
 }
 
-.input:focus {
-  @apply shadow-gray-800 shadow-2xl;
+.filterInput:focus {
+  box-shadow: 0 0 0 1px #d3d3d370;
 }
 
-.textFilter {
-  @apply w-36;
+.tablePagination {
+  font-family: 'Arial', sans-serif;
+} 
+
+.paginationArrow {
+  flex: 0 0 auto;
+  color: rgb(255 255 255);
+  padding: 12px;
+  overflow: visible;
+  font-size: 1.5rem;
+  text-align: center;
+  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  border-radius: 50%;
 }
 
-.rangeFilter {
-  @apply w-32;
+.paginationArrow:hover {
+  background-color: rgb(48 48 48 / 83%);
+}
+
+.paginationSelect {
+  background: #505050;
+  height: 35px;
+  font-size: 12px;
+  width: 100px;
+  border-radius: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.paginationInput {
+  background: #505050;
+  height: 35px;
+  font-size: 12px;
+  width: 50px;
+  border-radius: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.paginationInput:focus {
+  outline: none;
+  border: none;
+}
+
+.filterInputButton {
+  width: unset !important;
+  height: unset !important;
+  font-size: 14px;
+  margin: 10px;
+  background-color: transparent;
+  border-radius: 25px;
+}
+
+.filterInputButton:hover {
+  background-color: transparent;
+}
+
+.filterInput {
+  flex-grow: 1;
+  border-radius: 0.375rem;
+  --tw-bg-opacity: 1;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  --tw-text-opacity: 1;
+  color: rgb(212 215 220 / var(--tw-text-opacity));
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  background-color: #505050;
+}
+
+.inputContainer {
+    margin-top: 0.25rem;
+    display: flex;
 }
 
 .rangeContainer {
-  @apply flex space-x-2;
+  display: flex;
 }

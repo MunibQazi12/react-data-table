@@ -11,6 +11,7 @@
   @apply shadow-lg border-separate border-spacing-0  rounded-lg text-sm  
   /* TODO: used for rounded corners but disabled for sticky header */
   /* overflow-hidden  resize-x*/;
+  font-family: 'Arial', sans-serif;
 }
 
 .th {
@@ -30,9 +31,23 @@
   /* hover:cursor-pointer */
 }
 
+.table thead th {
+  box-shadow: none;
+  border-bottom-width: 2px;
+  border-left-width: 2px;
+}
+
 .tr {
   @apply bg-gray-700 transition-all duration-200;
   /* cursor-pointer  */
+}
+
+.tr:nth-child(even) {
+  background-color: #2d3436;
+}
+
+.tr:nth-child(odd) {
+  background-color: #262c2e;
 }
 
 .tr:hover {
@@ -66,8 +81,8 @@
 .resizer {
   @apply absolute z-tableHeaderResizer top-0 h-full  bg-gray-600
   cursor-col-resize;
-  width: 8px;
-  right: -4px;
+  width: 2px;
+  right: 0;
   user-select: none;
   touch-action: none;
 }
@@ -83,11 +98,17 @@
 
 .columnDragger {
   @apply mr-2 cursor-grab;
+  width: 15px;
 }
 
 .headerFlex {
   @apply flex items-center min-w-max;
 }
+
+.headerFlex button {
+margin-left: 70px;
+}
+
 .headerFlexSpacer {
   @apply grow;
 }
@@ -101,11 +122,35 @@
 
 .dropdownList li {
   @apply py-2 cursor-pointer hover:bg-gray-700 rounded-lg p-3 text-gray-400;
+  cursor: pointer;
+    border-radius: 0;
+    padding: 0.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    --tw-text-opacity: 1;
+    color: rgb(212 215 220 / var(--tw-text-opacity));
+    border-bottom: 0.1px solid #d3d3d354;
+    font-size: 14px;
+    font-family: Arial;
 }
+
+.dropdownList li:first-child {
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+}
+
+.dropdownList li:last-child {
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-bottom: none;
+}
+
 
 .sortDiv {
   @apply cursor-pointer 
    select-none;
+  /* position: relative;
+  left: 50px; */
 }
 
 .sortIcon {
@@ -143,4 +188,94 @@
 
 .editableCell input:focus {
   @apply border-2 border-secondary-500 shadow-gray-800 shadow-md;
+}
+
+.tableHeader {
+  width: 100%;
+}
+
+.tableHeaderBtn {
+  font-family: 'Arial', sans-serif;
+}
+
+.tableHeaderBtn button {
+  width: 180px;
+  height: 40px;
+  border-radius: 5px;
+  font-size: 14px;
+  margin: 10px;
+  background-color: #313131;
+  border-radius: 25px;
+}
+
+.tableHeaderBtn button:hover {
+  background-color: #5c5c5c;
+  color: #fff;
+}
+
+.filterInput {
+  border-radius: 5px;
+  background-color: #313131;
+  border: 1px solid #5c5c5c;
+}
+
+.filterInput:focus {
+  box-shadow: 0 0 0 1px #d3d3d370;
+}
+
+.tablePagination {
+  font-family: 'Arial', sans-serif;
+} 
+
+.paginationArrow {
+  flex: 0 0 auto;
+  color: rgb(255 255 255);
+  padding: 12px;
+  overflow: visible;
+  font-size: 1.5rem;
+  text-align: center;
+  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  border-radius: 50%;
+}
+
+.paginationArrow:hover {
+  background-color: rgb(48 48 48 / 83%);
+}
+
+.paginationSelect {
+  background: #505050;
+  height: 35px;
+  font-size: 12px;
+  width: 100px;
+  border-radius: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.paginationInput {
+  background: #505050;
+  height: 35px;
+  font-size: 12px;
+  width: 50px;
+  border-radius: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.paginationInput:focus {
+  outline: none;
+  border: none;
+}
+
+.filterInputButton {
+  width: unset !important;
+  height: unset !important;
+  font-size: 14px;
+  margin: 10px;
+  background-color: transparent;
+  border-radius: 25px;
+}
+
+.filterInputButton:hover {
+  background-color: transparent;
 }

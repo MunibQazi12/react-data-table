@@ -43,15 +43,16 @@ interface Props<DataType> {
   ) => void;
   onClick?: (row: DataType) => void;
   initialSelection?: DataType[];
-  // pageCount?: number
   sortColumns?: SortCol[];
-  // setPagination?: any;
-  // pagination?: any
+  pinning?: {
+    columnPinning: any,
+    setColumnPinning: any
+  },
+  visibility?: {
+    setColumnVisibility: any,
+    columnVisibility: any
+  },
   config?: TableConfig;
-  // columnFilters?: any,
-  // setColumnFilters?: any;
-  // globalFilter?: string,
-  // setGlobalFilter?: any,
   filters?: {
     columnFilters: Array<any>,
     setColumnFilters: any,
@@ -77,6 +78,10 @@ export function TableRenderer<DataType>({
   Pagination,
   //Table filters
   filters,
+  //columns pinning
+  pinning,
+  //columns visibility
+  visibility,
   //TODO: link all config values:
   config = {
     enableSorting: true,
@@ -89,6 +94,8 @@ export function TableRenderer<DataType>({
   const [showFilters, setShowFilters] = useState(true)
   const [enableTableConfig, setEnableTableConfig] = useState(true)
   const { pageCount, pagination, setPagination } = Pagination || {}
+  const { columnPinning, setColumnPinning } = pinning || {}
+  const { setColumnVisibility, columnVisibility } = visibility || {}
   const {
     columnFilters,
     setColumnFilters,
@@ -158,8 +165,7 @@ export function TableRenderer<DataType>({
 
   //### Filters
   // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState({})
-  const [columnPinning, setColumnPinning] = useState({})
+
 
   // console.log({ data })
 
@@ -291,55 +297,38 @@ export function TableRenderer<DataType>({
         globalFilter={globalFilter}
         setGlobalFilter={setGlobalFilter}
       /> */}
-      <button
-        className={css.action}
-        style={{
-          margin: '10px',
-          border: '2px solid grey',
-          padding: '2px'
-        }}
-        onClick={() => setShowFilters(!showFilters)}
-      >
-        {showFilters ? 'Hide' : 'Show'} Filters
-      </button>
+      <div className={css.tableHeaderBtn}>
+        <button
+          className={css.action}
+          onClick={() => setShowFilters(!showFilters)}
+        >
+          {showFilters ? 'Hide' : 'Show'} Filters
+        </button>
 
-      <button
-        className={css.action}
-        style={{
-          margin: '10px',
-          border: '2px solid grey',
-          padding: '2px'
-        }}
-        onClick={() => setEnableTableConfig(!enableTableConfig)}
-      >
-        {enableTableConfig ? 'Lock' : 'Unlock'} Table
-      </button>
+        <button
+          className={css.action}
+          onClick={() => setEnableTableConfig(!enableTableConfig)}
+        >
+          {enableTableConfig ? 'Lock' : 'Unlock'} Table
+        </button>
 
-      <button
-        className={css.action}
-        style={{
-          margin: '10px',
-          border: '2px solid grey',
-          padding: '2px'
-        }}
-        onClick={() => setColumnVisibility({})}
-      >
-        Show Hidden Columns
-      </button>
-      <button
-        style={{
-          margin: '10px',
-          padding: '2px'
-        }}
-      >
-        <DebounceInput
-          value={globalFilter ?? ''}
-          onChange={e => setGlobalFilter(String(e.target.value))}
-          className="p-2 font-lg shadow border border-block"
-          placeholder="Search all columns..."
-          debounceTimeout={300}
-        />
-      </button>
+        <button
+          className={css.action}
+          onClick={() => setColumnVisibility({})}
+        >
+          Show Hidden Columns
+        </button>
+        <button
+        >
+          <DebounceInput
+            value={globalFilter ?? ''}
+            onChange={e => setGlobalFilter(String(e.target.value))}
+            className={`${css.filterInput} p-2 font-lg shadow border border-block`}
+            placeholder="Search all columns..."
+            debounceTimeout={300}
+          />
+        </button>
+      </div>
 
 
       <div style={{ overflow: "auto", borderRadius: "16px" }}>
@@ -353,7 +342,7 @@ export function TableRenderer<DataType>({
         >
           <thead>
             {table.getHeaderGroups().map(headerGroup => (
-              <tr key={headerGroup.id} className={css.tr}>
+              <tr key={headerGroup.id}>
                 {headerGroup.headers.map(header => (
                   <MainHeader
                     key={header.id}
@@ -385,7 +374,7 @@ export function TableRenderer<DataType>({
                       style: {
                         width: cell.column.getSize(),
                         minWidth: cell.column.getSize(),
-                        backgroundColor: "rgb(54 57 63)",
+                        
                         // zIndex: 9,
                         [`${cell.column.getIsPinned()}`]: 0,
                         position: cell.column.getIsPinned() ? "sticky" : "unset"
@@ -400,8 +389,8 @@ export function TableRenderer<DataType>({
           </tbody>
         </table>
       </div>
-      <div className="h-2" />
-      <div className="flex items-center gap-2  mb-20">
+      
+      {/* <div className="flex items-center gap-2  mb-20">
         <button
           className="border rounded p-1"
           onClick={() => table.setPageIndex(0)}
@@ -461,7 +450,79 @@ export function TableRenderer<DataType>({
             </option>
           ))}
         </select>
-      </div>
+      </div> */}
+
+<div className={`${css.tablePagination} mt-4 flex items-center gap-2 mb-20`}>
+		  	<span className="flex items-center gap-1">
+				<div>Page</div>
+				<strong>
+					{table.getState().pagination.pageIndex + 1} of{' '}
+					{table.getPageCount()}
+				</strong>
+			</span>
+        	<span className="flex items-center gap-1">
+          		| Go to page:
+          		<input
+					type="number"
+					defaultValue={table.getState().pagination.pageIndex + 1}
+					onChange={e => {
+						const page = e.target.value ? Number(e.target.value) - 1 : 0
+						table.setPageIndex(page)
+					}}
+					className={css.paginationInput}
+          		/>
+        	</span>
+			<button
+				className={css.paginationArrow}
+				onClick={() => table.setPageIndex(0)}
+				disabled={!table.getCanPreviousPage()}
+			>
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+  					<path strokeLinecap="round" strokeLinejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" />
+				</svg>
+			</button>
+			<button
+				className={css.paginationArrow}
+				onClick={() => table.previousPage()}
+				disabled={!table.getCanPreviousPage()}
+			>
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+  					<path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+				</svg>
+			</button>
+			
+        	<select
+				value={table.getState().pagination.pageSize}
+				className={css.paginationSelect}
+				onChange={e => {
+					table.setPageSize(Number(e.target.value))
+				}}
+        	>
+          		{[10, 20, 30, 40, 50].map(pageSize => (
+					<option key={pageSize} value={pageSize}>
+					Show {pageSize}
+					</option>
+          		))}
+        	</select>
+			<button
+				className={css.paginationArrow}
+				onClick={() => table.nextPage()}
+				disabled={!table.getCanNextPage()}
+			>
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+  					<path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+				</svg>
+			</button>
+			<button
+				className={css.paginationArrow}
+				onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+				disabled={!table.getCanNextPage()}
+			>
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+  					<path stroke-linecap="round" stroke-linejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5" />
+				</svg>
+			</button>
+      	</div>
     </div>
   );
 }

@@ -16,6 +16,7 @@ interface Props<DataType> {
   columnsDef: ColumnDef<DataType, unknown>[];
   onClick?: (row: DataType) => void;
   config?: TableConfig;
+  apiKeys?:any
 }
 
 interface APIData<DataType> {
@@ -32,6 +33,7 @@ export function ZTable<DataType>({
   columnsDef,
   onClick,
   config,
+  apiKeys
 }: Props<DataType>) {
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -39,13 +41,23 @@ export function ZTable<DataType>({
   })
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
+  const [columnVisibility, setColumnVisibility] = useState({})
+  const [columnPinning, setColumnPinning] = useState({})
 
 
   const { isLoading, data, isError, error } = useQuery(
     // 'not-enabled' is used to avoid Missing queryFn when the query is not enabled.
-    [queryId || requestPath! || 'not-enabled', pagination, globalFilter],
+    [queryId || requestPath! || 'not-enabled', pagination, globalFilter, columnFilters],
     () => {
-      const queryString = `?skip=${pagination.pageIndex}&limit=${pagination.pageSize}&search=${globalFilter}`;
+      const {
+        skip,
+        sort,
+        limit,
+        filter,
+        search
+      } = apiKeys || {}
+      const filtersJSON = JSON.stringify(columnFilters)
+      const queryString = `?${skip}=${pagination.pageIndex}&${limit}=${pagination.pageSize}&${search}=${globalFilter}&${filter}=${filtersJSON}`;
       return axios.get((requestPath + queryString)!);
     },
     {
@@ -97,6 +109,15 @@ export function ZTable<DataType>({
             pageCount: total / limit,
             pagination: pagination,
             setPagination: setPagination,
+          }}
+          visibility={{
+            setColumnVisibility,
+            columnVisibility
+          }}
+
+          pinning={{
+            columnPinning,
+            setColumnPinning
           }}
 
         />
